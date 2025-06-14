@@ -19,7 +19,7 @@ class PromoController extends Controller {
     $totalPromos = $promoModel->countActivePromos($category);
     $totalPages = ceil($totalPromos / $limit);
 
-    $this->loadView('dashboard/promo', [
+    $this->loadView('promo/index', [
         'promos' => $promos,
         'activeCategory' => $category,
         'pageTitle' => 'Promo | Travlie',
@@ -64,13 +64,14 @@ class PromoController extends Controller {
   public function delete() {
     $promoModel = $this->loadModel('Promo');
     $promoId = $_GET['id'] ?? null;
+    $userId = $_SESSION['user_id'] ?? null;
 
-    if ($promoId && is_numeric($promoId)) {
-        $promoModel->deletePromoById($promoId);
+    if ($promoId && $userId && is_numeric($promoId)) {
+        $promoModel->hidePromoForUser($userId, $promoId);
     }
 
-    // Redirect kembali ke halaman utama
     header("Location: index.php?c=promo&m=index");
     exit;
   }
+
 }
