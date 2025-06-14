@@ -12,6 +12,23 @@ class Order extends Model {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function getOrdersByUserId($user_id) {
+    $sql = "SELECT *, CONCAT(order_name, order_code) AS full_order_id 
+            FROM orders 
+            WHERE user_id = ?
+            ORDER BY order_date DESC";
+    $stmt = $this->dbconn->prepare($sql);
+    if (!$stmt) return [];
+
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $orders = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    return $orders;
+}
+
     public function getOrderByOrderCode($order_code) {
         $sql = "SELECT *, CONCAT(order_name, order_code) AS full_order_id 
                 FROM orders 
