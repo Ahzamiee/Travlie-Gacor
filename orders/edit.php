@@ -45,7 +45,7 @@
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select" id="status" name="status">
                                 <option value="Menunggu Pembayaran" <?php if($order['status'] == 'Menunggu Pembayaran') echo 'selected'; ?>>Menunggu Pembayaran</option>
-                                <option value="Sudah Dibayar" <?php if($order['status'] == 'Sudah Selesai') echo 'selected'; ?>>Sudah Selesai</option>
+                                <option value="Sudah Selesai" <?php if($order['status'] == 'Sudah Selesai') echo 'selected'; ?>>Sudah Selesai</option>
                                 <option value="Pesanan Dibatalkan" <?php if($order['status'] == 'Pesanan Dibatalkan') echo 'selected'; ?>>Pesanan Dibatalkan</option>
                             </select>
                         </div>
