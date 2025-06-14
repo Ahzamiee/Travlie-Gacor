@@ -130,4 +130,34 @@ public function index() {
 
     
     }
+
+    public function cancel() {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['order_code'])) {
+        header('Location: index.php?c=order&m=index');
+        exit();
+    }
+
+    $order_code = (int)$_POST['order_code'];
+    $order = $this->model->getOrderByOrderCode($order_code);
+
+    if (!$order) {
+        echo "Pesanan tidak ditemukan.";
+        return;
+    }
+
+    if ($order['user_id'] != $_SESSION['user']['user_id']) {
+        echo "Akses ditolak.";
+        return;
+    }
+
+    if (strtoupper($order['status']) !== 'MENUNGGU PEMBAYARAN') {
+        echo "Pesanan tidak bisa dibatalkan.";
+        return;
+    }
+
+    $this->model->updateStatus($order_code, 'Pesanan Dibatalkan');
+    header('Location: index.php?c=order&m=index');
+    exit();
+}
+
 }
