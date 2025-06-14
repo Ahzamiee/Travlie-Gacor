@@ -14,9 +14,6 @@
             <a href="?c=order&m=index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
-            <a href="?c=admin&m=createOrderForm" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Tambah Pesanan Baru
-            </a>
         </div>
     </div>
 
