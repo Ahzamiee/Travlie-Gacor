@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders</title>
-    <link rel="shortcut icon" href="../../favicon.ico" type="x-icon">
+    <link rel="shortcut icon" href="/../../favicon.ico" type="x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -65,8 +65,16 @@ if (session_status() === PHP_SESSION_NONE) {
                             </p>
 
                             <div class="mt-auto"> 
-                                <?php if (strtoupper(trim($order['status'])) === 'MENUNGGU PEMBAYARAN'): ?>
-                                    <a href="index.php?c=order&m=checkout&id=<?php echo htmlspecialchars($order['order_code']); ?>" class="btn btn-primary mt-2 w-100">Lanjutkan Pembayaran</a>
+                               <?php if (strtoupper(trim($order['status'])) === 'MENUNGGU PEMBAYARAN'): ?>
+                                    <a href="index.php?c=order&m=checkout&id=<?= htmlspecialchars($order['order_code']); ?>" class="btn btn-primary mt-2 w-100">Lanjutkan Pembayaran</a>
+
+                                    <?php if ($_SESSION['user']['role'] === 'user'): ?>
+                                        <form action="index.php?c=order&m=cancel" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?');">
+                                            <input type="hidden" name="order_code" value="<?= htmlspecialchars($order['order_code']); ?>">
+                                            <button type="submit" class="btn btn-outline-danger mt-2 w-100">Batalkan Pesanan</button>
+                                        </form>
+                                    <?php endif; ?>
+                                    
                                 <?php elseif (strtoupper(trim($order['status'])) === 'SUDAH DIBAYAR'): ?>
                                     <a href="index.php?c=order&m=detail&id=<?php echo htmlspecialchars($order['order_code']); ?>" class="btn btn-outline-info mt-2 w-100">Lihat Detail</a>
                                 <?php elseif (strtoupper(trim($order['status'])) === 'SELESAI' || strtoupper(trim($order['status'])) === 'SUDAH SELESAI'): ?>
@@ -74,6 +82,8 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <?php else: ?>
                                     <button class="btn btn-outline-secondary mt-2 w-100" disabled><?php echo htmlspecialchars(empty(trim($order['status'])) ? 'Tidak Ada Status' : $order['status']);?></button>
                                 <?php endif; ?>
+
+                                
                             </div>
                         </div>
                     </div>
