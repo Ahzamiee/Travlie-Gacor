@@ -2,18 +2,40 @@
 require_once 'Model.php';
 
 class Promo extends Model {
-  public function getActivePromos($category = 'All', $limit = 6, $offset = 0) {
+public function getActivePromos($category = 'All', $limit = 6, $offset = 0, $userId = null) {
     $conn = $this->getDbConnection();
     $today = date("Y-m-d");
 
-    if ($category === 'All') {
-        $sql = "SELECT * FROM promos WHERE status = 'Active' AND start_date <= ? AND end_date >= ? LIMIT ? OFFSET ?";
-        $stmt = $conn->prepare($sql);
+    $baseSQL = "
+        SELECT * FROM promos 
+        WHERE status = 'Active' 
+        AND start_date <= ? 
+        AND end_date >= ? ";
+
+    if ($category !== 'All') {
+        $baseSQL .= "AND category = ? ";
+    }
+
+    if ($userId !== null) {
+        $baseSQL .= "AND promo_id NOT IN (
+            SELECT promo_id FROM user_hidden_promos WHERE user_id = ?
+        ) ";
+    }
+
+    $baseSQL .= "LIMIT ? OFFSET ?";
+
+    if ($category === 'All' && $userId === null) {
+        $stmt = $conn->prepare($baseSQL);
         $stmt->bind_param("ssii", $today, $today, $limit, $offset);
-    } else {
-        $sql = "SELECT * FROM promos WHERE status = 'Active' AND start_date <= ? AND end_date >= ? AND category = ? LIMIT ? OFFSET ?";
-        $stmt = $conn->prepare($sql);
+    } elseif ($category === 'All' && $userId !== null) {
+        $stmt = $conn->prepare($baseSQL);
+        $stmt->bind_param("ssiii", $today, $today, $userId, $limit, $offset);
+    } elseif ($category !== 'All' && $userId === null) {
+        $stmt = $conn->prepare($baseSQL);
         $stmt->bind_param("sssii", $today, $today, $category, $limit, $offset);
+    } else {
+        $stmt = $conn->prepare($baseSQL);
+        $stmt->bind_param("sssiii", $today, $today, $category, $userId, $limit, $offset);
     }
 
     $stmt->execute();
@@ -25,24 +47,43 @@ class Promo extends Model {
     return $promos;
   }
 
-  public function countActivePromos($category = 'All') {
+public function countActivePromos($category = 'All', $userId = null) {
     $conn = $this->getDbConnection();
     $today = date("Y-m-d");
 
-    if ($category === 'All') {
-        $sql = "SELECT COUNT(*) as total FROM promos WHERE status = 'Active' AND start_date <= ? AND end_date >= ?";
+    $sql = "
+        SELECT COUNT(*) as total FROM promos 
+        WHERE status = 'Active' 
+        AND start_date <= ? 
+        AND end_date >= ? ";
+
+    if ($category !== 'All') {
+        $sql .= "AND category = ? ";
+    }
+
+    if ($userId !== null) {
+        $sql .= "AND promo_id NOT IN (
+            SELECT promo_id FROM user_hidden_promos WHERE user_id = ?
+        )";
+    }
+
+    if ($category === 'All' && $userId === null) {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $today, $today);
-    } else {
-        $sql = "SELECT COUNT(*) as total FROM promos WHERE status = 'Active' AND start_date <= ? AND end_date >= ? AND category = ?";
+    } elseif ($category === 'All' && $userId !== null) {
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssi", $today, $today, $userId);
+    } elseif ($category !== 'All' && $userId === null) {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sss", $today, $today, $category);
+    } else {
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssi", $today, $today, $category, $userId);
     }
 
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-
     return $row['total'] ?? 0;
   }
 
