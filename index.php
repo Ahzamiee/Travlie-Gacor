@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders</title>
-    <link rel="shortcut icon" href="favicon.ico" type="x-icon">
+    <link rel="shortcut icon" href="../../favicon.ico" type="x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,19 +23,25 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="section-title mb-0">My Orders</h1>
-            
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
-                <a href="?c=admin&m=manageOrders" class="btn btn-info">
-                    <i class="fas fa-cogs"></i> Kelola Semua Pesanan
-                </a>
-            <?php endif; ?>
+            <div class="d-flex gap-2">
+                <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'user'): ?>
+                    <a href="?c=order&m=createForm" class="btn btn-success">
+                        <i class="fas fa-plus-circle"></i> Buat Pesanan Baru
+                    </a>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin'): ?>
+                    <a href="?c=admin&m=manageOrders" class="btn btn-info">
+                        <i class="fas fa-cogs"></i> Kelola Semua Pesanan
+                    </a>
+                <?php endif; ?>
+            </div>
         </div>
         
         <div class="row g-4" id="orderList">
             <?php 
             if (isset($all_orders) && !empty($all_orders)):
                 foreach ($all_orders as $order): ?>
-
                 <div class="col-md-6 col-lg-4 order-item" data-status="<?php echo htmlspecialchars($order['status']); ?>">
                     <div class="card order-card shadow-sm h-100"> 
                         <div class="card-body d-flex flex-column">
@@ -45,24 +51,19 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <small>ID Pesanan: <strong><?php echo htmlspecialchars($order['full_order_id']); ?></strong></small>
                                 <i class="far fa-copy ms-2 copy-icon" title="Salin ID Pesanan" style="cursor: pointer;"></i>
                             </div>
-                            <p class="order-price">Total: <?php echo htmlspecialchars($order['total_price']); ?></p>
-                            
-                            <!-- BAGIAN YANG DIPERBAIKI SECARA FINAL -->
+                            <p class="order-price">
+                            Total: Rp <?php echo number_format((int) preg_replace('/\D/', '', $order['total_price']), 0, ',', '.'); ?>
+                            </p>
+
+
                             <p class="card-text mt-2">
                                 <span class="order-status-label">Status:</span> 
-                                <!-- View sekarang hanya perlu mencetak variabel yang sudah disiapkan Controller -->
                                 <span class="badge <?php echo htmlspecialchars($order['status_class']); ?>">
-                                    <?php 
-                                        // Jika statusnya kosong, tampilkan teks default
-                                        if (empty(trim($order['status']))) {
-                                            echo 'Tidak Ada Status';
-                                        } else {
-                                            echo htmlspecialchars($order['status']);
-                                        }
-                                    ?>
+                                         <?php echo htmlspecialchars($order['status']); ?>
                                 </span>
+
                             </p>
-                            
+
                             <div class="mt-auto"> 
                                 <?php if (strtoupper(trim($order['status'])) === 'MENUNGGU PEMBAYARAN'): ?>
                                     <a href="index.php?c=order&m=checkout&id=<?php echo htmlspecialchars($order['order_code']); ?>" class="btn btn-primary mt-2 w-100">Lanjutkan Pembayaran</a>
@@ -74,7 +75,6 @@ if (session_status() === PHP_SESSION_NONE) {
                                     <button class="btn btn-outline-secondary mt-2 w-100" disabled><?php echo htmlspecialchars(empty(trim($order['status'])) ? 'Tidak Ada Status' : $order['status']);?></button>
                                 <?php endif; ?>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -87,12 +87,11 @@ if (session_status() === PHP_SESSION_NONE) {
                 </div>
             <?php endif; ?>
         </div>
-        
     </div>
-    
+
     <?php include_once 'views/layouts/footer.php'; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </body>
 </html>
