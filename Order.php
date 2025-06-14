@@ -70,4 +70,12 @@ class Order extends Model {
         $stmt->close();
         return $res;
     }
+
+    public function updateStatus($order_code, $new_status) {
+    $sql = "UPDATE orders SET status = ? WHERE order_code = ?";
+    $stmt = $this->dbconn->prepare($sql);
+    $stmt->bind_param("si", $new_status, $order_code);
+    return $stmt->execute();
+}
+
 }
