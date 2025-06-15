@@ -20,7 +20,6 @@ class Promo extends Model {
         return $promos;
     }
 
-// Model: Promo.php
     public function getAllPromos() {
       $query = "SELECT * FROM promos";
       $stmt = $this->getDbConnection()->prepare($query);
