@@ -1,130 +1,172 @@
 <?php
-require_once 'Model.php';
 
 class Promo extends Model {
-public function getActivePromos($category = 'All', $limit = 6, $offset = 0, $userId = null) {
-    $conn = $this->getDbConnection();
-    $today = date("Y-m-d");
 
-    $baseSQL = "
-        SELECT * FROM promos 
-        WHERE status = 'Active' 
-        AND start_date <= ? 
-        AND end_date >= ? ";
-
-    if ($category !== 'All') {
-        $baseSQL .= "AND category = ? ";
+    public function __construct() {
+        parent::__construct(); // panggil konstruktor dari Model (untuk koneksi DB)
     }
 
-    if ($userId !== null) {
-        $baseSQL .= "AND promo_id NOT IN (
-            SELECT promo_id FROM user_hidden_promos WHERE user_id = ?
-        ) ";
+    public function getActivePromos() {
+        $query = "SELECT * FROM promos WHERE status = 'active' ORDER BY start_date DESC";
+        $stmt = $this->getDbConnection()->prepare($query);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $promos = [];
+        while ($row = $result->fetch_assoc()) {
+            $promos[] = $row;
+        }
+
+        return $promos;
     }
 
-    $baseSQL .= "LIMIT ? OFFSET ?";
+// Model: Promo.php
+    public function getAllPromos() {
+      $query = "SELECT * FROM promos";
+      $stmt = $this->getDbConnection()->prepare($query);
+      $stmt->execute();
+      $result = $stmt->get_result();
 
-    if ($category === 'All' && $userId === null) {
-        $stmt = $conn->prepare($baseSQL);
-        $stmt->bind_param("ssii", $today, $today, $limit, $offset);
-    } elseif ($category === 'All' && $userId !== null) {
-        $stmt = $conn->prepare($baseSQL);
-        $stmt->bind_param("ssiii", $today, $today, $userId, $limit, $offset);
-    } elseif ($category !== 'All' && $userId === null) {
-        $stmt = $conn->prepare($baseSQL);
-        $stmt->bind_param("sssii", $today, $today, $category, $limit, $offset);
-    } else {
-        $stmt = $conn->prepare($baseSQL);
-        $stmt->bind_param("sssiii", $today, $today, $category, $userId, $limit, $offset);
-    }
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $promos = [];
-    while ($row = $result->fetch_object()) {
+      $promos = [];
+      while ($row = $result->fetch_object()) {
         $promos[] = $row;
-    }
-    return $promos;
-  }
+      }
 
-public function countActivePromos($category = 'All', $userId = null) {
-    $conn = $this->getDbConnection();
-    $today = date("Y-m-d");
-
-    $sql = "
-        SELECT COUNT(*) as total FROM promos 
-        WHERE status = 'Active' 
-        AND start_date <= ? 
-        AND end_date >= ? ";
-
-    if ($category !== 'All') {
-        $sql .= "AND category = ? ";
+      return $promos; 
     }
 
-    if ($userId !== null) {
-        $sql .= "AND promo_id NOT IN (
-            SELECT promo_id FROM user_hidden_promos WHERE user_id = ?
-        )";
+    public function getActivePromosFiltered($category) {
+      if ($category !== 'All') {
+        $query = "SELECT * FROM promos WHERE status = 'active' AND category = ? ORDER BY start_date DESC";
+        $stmt = $this->getDbConnection()->prepare($query);
+        $stmt->bind_param("s", $category);
+      } else {
+        $query = "SELECT * FROM promos WHERE status = 'active' ORDER BY start_date DESC";
+        $stmt = $this->getDbConnection()->prepare($query);
+      }
+
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      $promos = [];
+      while ($row = $result->fetch_object()) {
+        $promos[] = $row;
+      }
+
+      return $promos;
     }
 
-    if ($category === 'All' && $userId === null) {
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $today, $today);
-    } elseif ($category === 'All' && $userId !== null) {
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssi", $today, $today, $userId);
-    } elseif ($category !== 'All' && $userId === null) {
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $today, $today, $category);
-    } else {
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssi", $today, $today, $category, $userId);
+    public function getDefaultPromosFiltered($category) {
+      if ($category !== 'All') {
+        $query = "SELECT * FROM promos WHERE status = 'active' AND is_default = 1 AND category = ? ORDER BY start_date DESC";
+        $stmt = $this->getDbConnection()->prepare($query);
+        $stmt->bind_param("s", $category);
+      } else {
+        $query = "SELECT * FROM promos WHERE status = 'active' AND is_default = 1 ORDER BY start_date DESC";
+        $stmt = $this->getDbConnection()->prepare($query);
+      }
+
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      $promos = [];
+      while ($row = $result->fetch_object()) {
+        $promos[] = $row;
+      }
+
+      return $promos;
     }
 
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    return $row['total'] ?? 0;
-  }
 
-  public function findByCode($code) {
-    $code = $_POST['promo_code'] ?? '';
-    $conn = $this->getDbConnection();
-    $today = date("Y-m-d");
-
-    $sql = "SELECT * FROM promos 
-      WHERE promo_code = ? 
-      AND status = 'Active' 
-      AND start_date <= ? 
-      AND end_date >= ? 
-      LIMIT 5";
-
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-      die("Prepare failed: " . $conn->error);  // ✅ Tambahkan debug ini
+    public function getPromoById($id) {
+        $query = "SELECT * FROM promos WHERE promo_id = ?";
+        $stmt = $this->getDbConnection()->prepare($query);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
-    $stmt->bind_param("sss", $code, $today, $today);
+    public function getPromoByCode($code) {
+      $query = "SELECT * FROM promos WHERE promo_code = ? LIMIT 1";
+      $stmt = $this->getDbConnection()->prepare($query);
+      $stmt->bind_param("s", $code); 
+      $stmt->execute();
+      return $stmt->get_result()->fetch_assoc();
+    }
 
-    $stmt->execute();
+    public function createPromo($data) {
+      $query = "INSERT INTO promos (
+        title, description, image_url, category, promo_code, discount_type,
+        discount_value, start_date, end_date, terms_conditions, status, usage_limit, is_default
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    $result = $stmt->get_result();
-    return $result->fetch_object();
-  }
+      $stmt = $this->getDbConnection()->prepare($query);
 
-  public function incrementUsage($promo_id) {
-    $conn = $this->getDbConnection();
-    $sql = "UPDATE promos SET usage_count = usage_count + 1 WHERE promo_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $promo_id);
+      $stmt->bind_param(
+        "ssssssdssssis",
+        $data['title'],
+        $data['description'],
+        $data['image_url'],
+        $data['category'],
+        $data['promo_code'],
+        $data['discount_type'],
+        $data['discount_value'],
+        $data['start_date'],
+        $data['end_date'],
+        $data['terms_conditions'],
+        $data['status'],
+        $data['usage_limit'],
+        $data['is_default']
+      );
     return $stmt->execute();
-  }
+    }
 
-  public function deletePromoById($id) {
-    $conn = $this->getDbConnection();
-    $stmt = $conn->prepare("DELETE FROM promos WHERE promo_id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-  }
+    // Update promo berdasarkan ID
+    public function updatePromo($id, $data) {
+      $query = "UPDATE promos SET 
+        title = ?, 
+        description = ?, 
+        image_url = ?, 
+        category = ?, 
+        promo_code = ?, 
+        discount_type = ?, 
+        discount_value = ?, 
+        start_date = ?, 
+        end_date = ?, 
+        terms_conditions = ?, 
+        status = ?, 
+        usage_limit = ?, 
+        is_default = ?
+        WHERE promo_id = ?";
 
+      $stmt = $this->getDbConnection()->prepare($query);
+
+      $stmt->bind_param(
+        'ssssssdssssiii',
+        $data['title'],
+        $data['description'],
+        $data['image_url'],
+        $data['category'],
+        $data['promo_code'],
+        $data['discount_type'],
+        $data['discount_value'],
+        $data['start_date'],
+        $data['end_date'],
+        $data['terms_conditions'],
+        $data['status'],
+        $data['usage_limit'],
+        $data['is_default'],
+        $id
+      );
+
+      return $stmt->execute();
+    }
+
+    // Hapus promo berdasarkan ID
+    public function deletePromo($id) {
+        $query = "DELETE FROM promos WHERE promo_id = ?";
+        $stmt = $this->getDbConnection()->prepare($query);
+        $stmt->bind_param('i', $id);
+        return $stmt->execute();
+    }
 }
