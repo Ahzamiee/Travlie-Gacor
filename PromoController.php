@@ -1,77 +1,34 @@
 <?php
 
-class PromoController extends Controller {
+  class PromoController extends Controller {
+    private $promoModel;
 
-  public function index() {
-    $promoModel = $this->loadModel('Promo');
+    public function __construct() {
+      if (session_status() === PHP_SESSION_NONE) {
+          session_start();
+      }
 
-    $category = $_GET['category'] ?? 'All';
-    $allowedCategories = ['All', 'Flight', 'Accommodation', 'Vehicle Rent'];
-    if (!in_array($category, $allowedCategories)) {
-        $category = 'All';
+      $this->promoModel = $this->loadModel('Promo');
     }
 
-    $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
-    $limit = 6;
-    $offset = ($page - 1) * $limit;
+    public function index() {
+      $category = $_GET['category'] ?? 'All'; // Ambil dari URL jika ada, default ke 'All'
+      $page = $_GET['page'] ?? 1;
 
-    $promos = $promoModel->getActivePromos($category, $limit, $offset);
-    $totalPromos = $promoModel->countActivePromos($category);
-    $totalPages = ceil($totalPromos / $limit);
+      if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') {
+        $promos = $this->promoModel->getActivePromosFiltered($category, $page, $limit = 8);
+      } else {
+        $promos = $this->promoModel->getDefaultPromosFiltered($category, $page, $limit = 8);
+      }
 
-    $this->loadView('promo/index', [
+      $this->loadView('promo/index', [
         'promos' => $promos,
-        'activeCategory' => $category,
-        'pageTitle' => 'Promo | Travlie',
+        'activeCategory' => $category,      // ✅ ini yang wajib dikirim
         'currentPage' => $page,
-        'totalPages' => $totalPages
-    ]);
-  }
+        'promoMessage' => $_SESSION['promoMessage'] ?? null,
+        'promoSuccess' => $_SESSION['promoSuccess'] ?? null
+      ]);
 
-  public function checkCode() {
-    $promoModel = $this->loadModel('Promo');
-    $code = $_POST['promo_code'] ?? '';
-    
-    // Gunakan findByCode yang sudah diupdate
-    $promo = $promoModel->findByCode($code); 
-    
-    $message = "❌ Kode promo tidak valid atau sudah tidak aktif.";
-    $success = false;
-
-    if ($promo) {
-      $remaining = $promo->usage_limit - $promo->usage_count;
-      $message = "✅ Promo ditemukan: {$promo->title}. Sisa penggunaan: {$remaining} kali.";
-      $success = true;
-    } else {
-      $message = "❌ Kode promo tidak valid, sudah kedaluwarsa, atau sudah habis digunakan.";
     }
 
-    // Tampilkan kembali halaman promo dengan pesan
-    $category = 'All';
-    $promos = $promoModel->getActivePromos($category);
-
-    $this->loadView('dashboard/promo', [
-        'promos' => $promos,
-        'activeCategory' => $category,
-        'pageTitle' => 'Promo | Travlie',
-        'promoMessage' => $message,
-        'promoSuccess' => $success,
-        'currentPage' => 1,
-        'totalPages' => ceil($promoModel->countActivePromos($category) / 6)
-    ]);
   }
-
-  public function delete() {
-    $promoModel = $this->loadModel('Promo');
-    $promoId = $_GET['id'] ?? null;
-    $userId = $_SESSION['user_id'] ?? null;
-
-    if ($promoId && $userId && is_numeric($promoId)) {
-        $promoModel->hidePromoForUser($userId, $promoId);
-    }
-
-    header("Location: index.php?c=promo&m=index");
-    exit;
-  }
-
-}
