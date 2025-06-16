@@ -74,8 +74,8 @@ $isAdmin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
                 </div>
                 <?php if ($isAdmin): ?>
                   <div class="d-flex flex-column gap-1">
-                    <a href="index.php?c=adminPromo&m=edit&id=<?= $promo->promo_id ?>" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="index.php?c=adminPromo&m=delete&id=<?= $promo->promo_id ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus promo ini?')">Hapus</a>
+                    <a href="index.php?c=admin&m=editPromo&id=<?= $promo->promo_id ?>" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="index.php?c=admin&m=deletePromo&id=<?= $promo->promo_id ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus promo ini?')">Hapus</a>
                   </div>
                 <?php endif; ?>
               </div>
@@ -94,7 +94,7 @@ $isAdmin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
     <!-- Tombol Tambah Promo (admin) -->
     <?php if ($isAdmin): ?>
       <div class="mb-3 text-end">
-        <a href="?c=adminPromo&m=createform" class="btn btn-success">+ Tambah Promo</a>
+        <a href="?c=admin&m=createPromoform" class="btn btn-success">+ Tambah Promo</a>
       </div>
     <?php endif; ?>
 
