@@ -20,7 +20,7 @@ error_reporting(E_ALL);
 <div class="d-flex justify-content-center">
   <div class="card p-4 shadow" style="max-width: 600px; width: 100%;">
 
-    <form action="?c=adminPromo&m=update" method="POST">
+    <form action="?c=admin&m=updatePromo" method="POST">
       <input type="hidden" name="promo_id" value="<?= $promo['promo_id'] ?>">
         <div class="mb-3">
             <label>Judul Promo</label>
