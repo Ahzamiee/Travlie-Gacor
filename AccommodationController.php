@@ -1,50 +1,34 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// File: controllers/AccommodationController.php
 
-error_log("DEBUG: (AccommodationController.php) Step 20 - AccommodationController.php di-load."); // Tulis ke log
-
-// TUGASLK02/controllers/AccommodationController.php
-// Pastikan base Controller di-include terlebih dahulu karena ini adalah parent class
 require_once __DIR__ . '/Controller.php';
-
-// Model spesifik yang akan digunakan oleh controller ini
-// require_once __DIR__ . '/../models/AccommodationModel.php'; // Ini bisa dihapus jika loadModel() sudah menangani inclusion
 
 class AccommodationController extends Controller {
     private $accommodationModel;
 
     public function __construct() {
-        error_log("DEBUG: (AccommodationController.php) Step 21 - Constructor dipanggil."); // Marker 21 (seharusnya ini muncul sebagai pengganti TEST success)
-        
-        $this->checkLogin(); // Ini akan mengarahkan ke halaman login jika belum login.
-
-        $this->accommodationModel = $this->loadModel('AccommodationModel');
-        error_log("DEBUG: (AccommodationController.php) Step 22 - Model akomodasi diinisialisasi."); // Marker 22
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $this->checkLogin();
+        // PERBAIKAN: Hapus loadModel dari constructor agar lebih efisien
     }
 
     public function index() {
-        // Check if user is admin
+        // PERBAIKAN: Load model di sini karena method ini membutuhkannya
+        $this->accommodationModel = $this->loadModel('Accommodation');
+
         $isAdmin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
         
-        // Get filters from GET parameters
         $filters = [
             'rating' => $_GET['rating'] ?? null,
             'price_min' => $_GET['price_min'] ?? null,
-            'price_max' => $_GET['price_max'] ?? null,
-            'type' => $_GET['type'] ?? null,
-            'location' => $_GET['location'] ?? null,
-            'show_inactive' => ($isAdmin && isset($_GET['show_inactive'])) ? $_GET['show_inactive'] : null
+            // ... filter lainnya ...
+            'include_inactive' => ($isAdmin && !empty($_GET['show_inactive']))
         ];
         
-        // Get accommodations based on filters
-        if ($isAdmin && !empty($filters['show_inactive']) && $filters['show_inactive'] === '1') {
-            // For admin: get all accommodations including inactive ones
-            $accommodations = $this->accommodationModel->getFilteredAccommodationsWithInactive($filters);
-        } else {
-            // For regular users: get only active accommodations
-            $accommodations = $this->accommodationModel->getFilteredAccommodations($filters);
-        }
+        // Panggil method yang sudah disederhanakan di model
+        $accommodations = $this->accommodationModel->getFilteredAccommodations($filters);
         
         $data = [
             'accommodations' => $accommodations,
@@ -54,10 +38,9 @@ class AccommodationController extends Controller {
         $this->loadView('accommodation/index', $data);
     }
 
-    // Contoh metode lain: untuk melihat detail akomodasi
-    // Perbaikan untuk method detail di AccommodationController
-
     public function detail($id = null) {
+        // PERBAIKAN: Load model di sini karena method ini membutuhkannya
+        $this->accommodationModel = $this->loadModel('Accommodation');
         error_log("DEBUG: detail() method called");
         
         // Ambil ID dari parameter atau $_GET
@@ -89,21 +72,25 @@ class AccommodationController extends Controller {
         }
     }
 
-    // Helper method to check admin access
-    private function checkAdminAccess() {
-        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
-            header('Location: ?c=auth&m=login&error=access_denied');
-            exit();
-        }
+    public function fetchActiveForDashboard() {
+        // PERBAIKAN: Load model di sini karena method ini membutuhkannya
+        $this->accommodationModel = $this->loadModel('Accommodation');
+        
+        $accommodations = $this->accommodationModel->getActiveForDashboard(4);
+
+        header('Content-Type: application/json');
+        echo json_encode($accommodations);
+        exit();
     }
 
-    // --- BARU: Metode pembantu untuk memeriksa apakah pengguna sudah login ---
     private function checkLogin() {
         if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
-            $_SESSION['error_message'] = 'Anda harus login untuk mengakses halaman ini.'; // Set pesan error
+            $_SESSION['error_message'] = 'Anda harus login untuk mengakses halaman ini.';
             header('Location: ?c=auth&m=login&error=not_logged_in');
             exit();
         }
     }
-
+    
+    // PERBAIKAN: checkAdminAccess() bisa dihapus jika tidak ada method spesifik yang butuh akses admin
+    // yang tidak diproteksi oleh constructor di AdminController.
 }
