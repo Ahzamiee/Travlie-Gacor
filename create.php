@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<div class=<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -15,7 +15,7 @@
 <div class="d-flex justify-content-center">
   <div class="card p-4 shadow" style="max-width: 600px; width: 100%;">
     
-    <form action="?c=adminPromo&m=store" method="POST">
+   <form action="?c=admin&m=storePromo" method="POST">
       <div class="mb-3">
         <input type="text" name="title" class="form-control" placeholder="Judul Promo" required>
       </div>
@@ -82,4 +82,6 @@
       <i class="bi bi-arrow-left"></i> Kembali ke Daftar Promo
     </a>
   </div>
-</div>
+
+    
+   
