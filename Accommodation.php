@@ -4,7 +4,7 @@
 // Pastikan Model.php (base model/database) sudah di-include
 require_once __DIR__ . '/Model.php'; 
 
-class AccommodationModel extends Model { // Extends Model untuk akses DB
+class Accommodation extends Model { // Extends Model untuk akses DB
     public function __construct() {
         parent::__construct(); // Panggil constructor dari Model untuk inisialisasi $dbconn
         error_log("DEBUG: (AccommodationModel.php) Step 27 - AccommodationModel constructor dipanggil."); // Tulis ke log
@@ -273,7 +273,7 @@ class AccommodationModel extends Model { // Extends Model untuk akses DB
                 WHERE id_akomodasi = ?";
         
         $stmt = $this->dbconn->prepare($sql);
-        $stmt->bind_param("ssssssdddsssi", 
+        $stmt->bind_param("ssssssiddssi", 
             $data['nama_akomodasi'],
             $data['deskripsi_singkat'],
             $data['deskripsi_lengkap'],
@@ -457,6 +457,19 @@ public function getFilteredAccommodationsWithInactive($filters = []) {
     
     return $accommodations;
 }
+
+public function getActiveForDashboard($limit = 4) {
+        // PENTING: Pastikan nama kolom status di tabel `accommodations` Anda adalah `status` 
+        // dan nilainya adalah 'active'. Jika berbeda (misalnya `is_aktif` dengan nilai `1`), 
+        // sesuaikan query SQL di bawah ini.
+    $sql = "SELECT * FROM accommodations WHERE is_aktif = 1 ORDER BY created_at DESC LIMIT ?";        
+        $db = $this->getDbConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param('i', $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 
     // ... metode lain jika ada (create, update, delete)
 }
