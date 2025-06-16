@@ -310,5 +310,131 @@ public function deletePromo() {
     exit();
 }
 
+   //Accommodation
 
+    public function manageAccommodations() {
+        $accommodations = $this->accommodationModel->getAllAccommodationsForAdmin();
+        $data = ['accommodations' => $accommodations];
+        $this->loadView('admin/accommodation/manage_accommodation', $data);
+    }
+
+    public function createAccommodation() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'nama_akomodasi' => $_POST['nama_akomodasi'] ?? '',
+                'deskripsi_singkat' => $_POST['deskripsi_singkat'] ?? '',
+                'deskripsi_lengkap' => $_POST['deskripsi_lengkap'] ?? '',
+                'tipe_akomodasi' => $_POST['tipe_akomodasi'] ?? '',
+                'provinsi' => $_POST['provinsi'] ?? '',
+                'kota' => $_POST['kota'] ?? '',
+                'rating_bintang' => $_POST['rating_bintang'] ?? 0,
+                'harga_standard' => $_POST['harga_standard'] ?? 0,
+                'harga_diskon' => $_POST['harga_diskon'] ?? null,
+                'url_gambar_utama' => $_POST['url_gambar_utama'] ?? '',
+                'telepon_kontak' => $_POST['telepon_kontak'] ?? '',
+                'email_kontak' => $_POST['email_kontak'] ?? ''
+            ];
+
+            if ($this->accommodationModel->createAccommodation($data)) {
+                header('Location: ?c=admin&m=manageAccommodations&success=created');
+            } else {
+                header('Location: ?c=admin&m=createAccommodation&error=failed');
+            }
+            exit();
+        }
+
+        $this->loadView('admin/accommodation/create_accommodation');
+    }
+
+    public function editAccommodation($id = null) {
+        if ($id === null && isset($_GET['id'])) {
+            $id = $_GET['id'];
+        }
+
+        if ($id === null) {
+            header('Location: ?c=admin&m=manageAccommodations');
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'nama_akomodasi' => $_POST['nama_akomodasi'] ?? '',
+                'deskripsi_singkat' => $_POST['deskripsi_singkat'] ?? '',
+                'deskripsi_lengkap' => $_POST['deskripsi_lengkap'] ?? '',
+                'tipe_akomodasi' => $_POST['tipe_akomodasi'] ?? '',
+                'provinsi' => $_POST['provinsi'] ?? '',
+                'kota' => $_POST['kota'] ?? '',
+                'rating_bintang' => $_POST['rating_bintang'] ?? 0,
+                'harga_standard' => $_POST['harga_standard'] ?? 0,
+                'harga_diskon' => $_POST['harga_diskon'] ?? null,
+                'url_gambar_utama' => $_POST['url_gambar_utama'] ?? '',
+                'telepon_kontak' => $_POST['telepon_kontak'] ?? '',
+                'email_kontak' => $_POST['email_kontak'] ?? ''
+            ];
+
+            if ($this->accommodationModel->updateAccommodation($id, $data)) {
+                header('Location: ?c=admin&m=manageAccommodations&success=updated');
+            } else {
+                header('Location: ?c=admin&m=editAccommodation&id=' . $id . '&error=failed');
+            }
+            exit();
+        }
+
+        $accommodation = $this->accommodationModel->getAccommodationById($id);
+        if (!$accommodation) {
+            header('Location: ?c=admin&m=manageAccommodations&error=notfound');
+            exit();
+        }
+
+        $data = ['accommodation' => $accommodation];
+        $this->loadView('admin/accommodation/edit_accommodation', $data);
+    }
+
+    public function deleteAccommodation($id = null) {
+        if ($id === null && isset($_GET['id'])) {
+            $id = $_GET['id'];
+        }
+
+        if ($id === null) {
+            header('Location: ?c=admin&m=manageAccommodations');
+            exit();
+        }
+
+        if ($this->accommodationModel->deleteAccommodation($id)) {
+            header('Location: ?c=admin&m=manageAccommodations&success=deleted');
+        } else {
+            header('Location: ?c=admin&m=manageAccommodations&error=delete_failed');
+        }
+        exit();
+    }
+
+    public function toggleStatus($id = null) {
+        // Tidak perlu checkAdminAccess() lagi di sini jika sudah di constructor
+        // Tapi pastikan ID diterima dengan benar
+        if ($id === null && isset($_GET['id'])) {
+            $id = $_GET['id'];
+        }
+
+        if ($id === null) {
+            header('Location: ?c=admin&m=manageAccommodations&error=status_failed&msg=ID_not_provided');
+            exit();
+        }
+
+        if ($this->accommodationModel->toggleAccommodationStatus($id)) {
+            // Redirect kembali ke halaman manajemen dengan pesan sukses
+            header('Location: ?c=admin&m=manageAccommodations&success=status_updated');
+        } else {
+            // Redirect kembali dengan pesan error
+            header('Location: ?c=admin&m=manageAccommodations&error=status_failed');
+        }
+        exit(); // Penting: Selalu keluar setelah redirect
+    }
+
+    // Metode checkAdminAccess() Anda
+    private function checkAdminAccess() {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+            header('Location: ?c=auth&m=login&error=access_denied');
+            exit();
+        }
+    }
 }
