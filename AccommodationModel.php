@@ -273,7 +273,7 @@ class AccommodationModel extends Model { // Extends Model untuk akses DB
                 WHERE id_akomodasi = ?";
         
         $stmt = $this->dbconn->prepare($sql);
-        $stmt->bind_param("ssssssiddssi", 
+        $stmt->bind_param("ssssssdddsssi", 
             $data['nama_akomodasi'],
             $data['deskripsi_singkat'],
             $data['deskripsi_lengkap'],
