@@ -1,0 +1,192 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    position: relative;
+    background: #65b7ff; 
+    padding: 1rem;
+    font-family: 'Crimson Pro', serif; 
+}
+.search-summary {
+    background-color: #d6d7d8; 
+    border: 1px solid #dee2e6; 
+    border-radius: 0.25rem; 
+    padding: 1rem; 
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    flex-wrap: wrap; 
+    box-shadow: 0 0.125rem 0.25rem rgba(45, 22, 22, 0.075);
+    margin-bottom: 0 !important; 
+    z-index: 2; 
+    position: relative; 
+}
+
+.rental-summary-text-box {
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.search-summary span {
+    font-weight: bold; 
+    margin-right: 15px; 
+    margin-bottom: 0; 
+    white-space: nowrap; 
+}
+
+.search-summary button {
+    white-space: nowrap; 
+    flex-shrink: 0; 
+    margin-left: auto; 
+}
+
+.filter-box {
+    padding: 1rem; 
+    border: 1px solid #dee2e6; 
+    border-top: none; 
+    border-radius: 0 0 0.25rem 0.25rem; 
+    background-color: #d6d7d8; 
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); 
+    display: flex; 
+    gap: 15px; 
+    flex-wrap: wrap;
+    z-index: 1; 
+    position: relative;
+}
+
+.filter-box .form-label {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 6px;
+}
+
+.filter-box .form-select,
+.filter-box .form-control {
+    min-width: 180px; 
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    box-shadow: none;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.filter-box .form-select:focus,
+.filter-box .form-control:focus {
+    border-color: #65b7ff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(101, 183, 255, 0.25);
+}
+
+.filter-box .btn-group .btn {
+    flex: 1;
+}
+
+.filter-box .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.filter-box .btn-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.list-group-item {
+    background-color: #ffffff; 
+    border: 1px solid #dee2e6; 
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; 
+}
+
+.list-group-item:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h5.mb-1 {
+    font-size: 1.2rem;
+    color: #000000;
+    margin-bottom: 0.25rem !important; 
+}
+
+.text-end {
+    text-align: end;
+}
+
+@media (max-width: 768px) {
+    .search-summary {
+        flex-direction: column; 
+        align-items: stretch; 
+        padding: 0.75rem;
+    }
+
+    .rental-summary-text-box {
+        width: 100%; 
+        justify-content: flex-start; 
+        margin-bottom: 10px; 
+    }
+
+    .search-summary span {
+        margin-right: 0;
+        margin-bottom: 5px; 
+        display: block; 
+    }
+
+    .search-summary button {
+        width: 100%;
+        margin-top: 10px;
+        margin-left: 0;
+    }
+
+    .filter-box > div {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .filter-box .flex-grow-1 {
+        flex-grow: 1;
+    }
+}
+
+/* Container utama untuk form */
+.form-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+/* Judul form (H2) */
+.form-container h2 {
+    margin-bottom: 25px;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Label untuk setiap input di dalam form */
+.form-container .form-label {
+    font-weight: 600;
+}
+
+/* Tombol di dalam form */
+.form-container .btn-primary {
+    margin-right: 10px;
+}
