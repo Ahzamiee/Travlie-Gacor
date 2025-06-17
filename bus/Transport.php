@@ -1,5 +1,5 @@
 <?php
-class Vehicle extends Model {
+class Transport extends Model {
 
     /**
      * Mengambil semua data kendaraan untuk digunakan di dropdown form.
@@ -12,7 +12,7 @@ class Vehicle extends Model {
                 v.class_name,
                 v.type,
                 o.name as operator_name
-            FROM vehicles v
+            FROM transport v
             JOIN operators o ON v.operator_id = o.id
             ORDER BY o.name ASC, v.class_name ASC
         ";
