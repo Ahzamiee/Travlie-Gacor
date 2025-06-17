@@ -10,20 +10,19 @@
 </head>
 <body>
 
-<?php include_once 'views/layouts/header.php'; ?>
+    <?php include_once 'views/layouts/header.php'; ?>
 
-<div class="container my-4">
-    <div class="search-summary mb-2 d-flex justify-content-between align-items-center flex-wrap">
-        <div class="rental-summary-text-box d-flex flex-column align-items-start" id="rentalSummaryTextBox">
-            <span id="currentRentalType" class="fs-4 fw-bold">Rental</span> 
-            <div class="d-flex flex-wrap align-items-center"> 
-                <span id="currentLocation"></span>&nbsp;&#x2022;&nbsp; 
-                <span id="currentDates"></span>
+    <div class="container my-4">
+        <div class="search-summary mb-2 d-flex justify-content-between align-items-center flex-wrap">
+            <div class="rental-summary-text-box d-flex flex-column align-items-start" id="rentalSummaryTextBox">
+                <span id="currentRentalType" class="fs-4 fw-bold">Rental</span> 
+                <div class="d-flex flex-wrap align-items-center"> 
+                    <span id="currentLocation"></span>&nbsp;&#x2022;&nbsp; 
+                    <span id="currentDates"></span>
             </div>
         </div>
         <button class="btn btn-primary ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse" id="toggleFilterBtn">
-            <i class="bi bi-pencil-fill me-2"></i>Ganti Pencarian
-        </button>
+            <i class="bi bi-pencil-fill me-2"></i>Ganti Pencarian</button>
     </div>
 
     <div class="collapse" id="filterCollapse">
@@ -64,8 +63,7 @@
 
 <div class="container mb-5">
     
-    <?php
-    $isAdmin = $data['isAdmin'] ?? false;
+    <?php $isAdmin = $data['isAdmin'] ?? false;
     
     // Tampilkan pesan flash (notifikasi) jika ada dari proses CRUD
     if (isset($_SESSION['message'])) {
@@ -76,8 +74,8 @@
         unset($_SESSION['message']); // Hapus pesan setelah ditampilkan
     }
     
-    // Tampilkan tombol "Tambah Kendaraan" hanya untuk admin
-    if ($isAdmin):
+    // tombol "Tambah Kendaraan" hanya untuk admin
+        if ($isAdmin):
     ?>
     <div class="mb-3">
         <a href="?c=vehicle&m=create" class="btn btn-success"><i class="bi bi-plus-circle-fill me-2"></i>Tambah Kendaraan Baru</a>
@@ -103,7 +101,7 @@
         // Data $vehicles seharusnya sudah dilewatkan oleh controller
         if (empty($vehicles)) {
              $vehicleModel = new Vehicle();
-             $vehicles = $vehicleModel->getAll();
+             $vehicles = $vehicleModel->getAll($isAdmin);
         }
 
         if (!empty($vehicles)) {
@@ -116,6 +114,14 @@
                 $jenis = $row['jenis_kendaraan'];
                 $kota = ucfirst($row['kota']);
                 $sewaUrlDefault = "?c=vehicle&m=sewa&id=" . htmlspecialchars($id) . "&" . $defaultFilterParams;
+
+                $statusBadge = $row['is_aktif'] 
+                    ? '<span class="badge bg-success">Aktif</span>' 
+                    : '<span class="badge bg-danger">Tidak Aktif</span>';
+
+                $toggleUrl = "?c=vehicle&m=toggleStatus&id=" . $id;
+                $toggleText = $row['is_aktif'] ? 'Nonaktifkan' : 'Aktifkan';
+                $toggleButtonClass = $row['is_aktif'] ? 'btn-outline-secondary' : 'btn-outline-success';
 
                 echo '
                 <div class="list-group-item list-group-item-action mb-3 p-3">
@@ -133,13 +139,14 @@
                             <a href="' . $sewaUrlDefault . '" class="btn btn-primary">Sewa Sekarang</a>
                             ' . ($isAdmin ? '
                             <div class="mt-2">
+                                <a href="' . $toggleUrl . '" class="btn btn-sm ' . $toggleButtonClass . '">' . $toggleText . '</a>
                                 <a href="?c=vehicle&m=edit&id=' . $id . '" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
                                 <a href="?c=vehicle&m=destroy&id=' . $id . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Anda yakin ingin menghapus data ini?\')"><i class="bi bi-trash-fill"></i> Hapus</a>
                             </div>
                             ' : '') . '
                         </div>
 
-                        <!-- ===== TAMPILAN MOBILE (<768px) ===== -->
+                        <!--TAMPILAN MOBILE (<768px)-->
                         <div class="col-7 d-md-none">
                             <div class="d-flex flex-column h-100">
                                 <h5 class="mb-1" style="font-size: 0.9rem;">' . htmlspecialchars($merk) . '</h5>
@@ -149,6 +156,7 @@
                                     <div class="d-flex flex-wrap gap-1">
                                         <a href="' . $sewaUrlDefault . '" class="btn btn-sm btn-primary flex-grow-1">Sewa</a>
                                         ' . ($isAdmin ? '
+                                        <a href="' . $toggleUrl . '" class="btn btn-sm ' . $toggleButtonClass . '">' . $toggleText . '</a>
                                         <a href="?c=vehicle&m=edit&id=' . $id . '" class="btn btn-sm btn-warning flex-grow-1">Edit</a>
                                         <a href="?c=vehicle&m=destroy&id=' . $id . '" class="btn btn-sm btn-danger flex-grow-1" onclick="return confirm(\'Anda yakin ingin menghapus data ini?\')">Hapus</a>
                                         ' : '') . '
@@ -163,7 +171,7 @@
                     </div>
                 </div>
 
-                <!-- Modal untuk detail (tidak berubah) -->
+                <!-- Modal untuk detail -->
                 <div class="modal fade" id="modal' . $id . '" tabindex="-1" aria-labelledby="modalLabel' . $id . '" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
                         <div class="modal-content">
@@ -187,15 +195,15 @@
                     </div>
                 </div>';
             }
-        } else {
-            echo '<div class="alert alert-info text-center" role="alert">Tidak ada kendaraan ditemukan.</div>';
-        }
-        ?>
+            } else {
+                echo '<div class="alert alert-info text-center" role="alert">Tidak ada kendaraan ditemukan.</div>';
+            }   
+            ?>
+        </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="style/js/rent.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="style/js/rent.js"></script>
 
 </body>
 </html>
