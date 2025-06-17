@@ -9,7 +9,7 @@ class Charter extends Model {
                 v.type as vehicle_type,
                 o.name as operator_name
             FROM charter_services cs
-            JOIN vehicles v ON cs.vehicle_id = v.id
+            JOIN transport v ON cs.vehicle_id = v.id
             JOIN operators o ON v.operator_id = o.id
             WHERE v.type = ?
             ORDER BY cs.base_price ASC
