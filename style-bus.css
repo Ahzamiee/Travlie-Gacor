@@ -1,0 +1,146 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+nav{
+    background-color: #65b7ff;
+    font-family: 'Crimson Pro', serif;
+}
+
+@media (max-width: 767px) {
+    .hero-bus > .container-md {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .hero-bus .rounded-3 {
+        border-radius: 0 !important;
+    }
+
+    .tab-content {
+        /* Hapus sudut melengkung di bawah agar menyatu */
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+}
+
+.hero-bus {
+    /* padding: 4rem 0;
+    background-color: #e9ecef; */
+    position: relative;
+    background-image: url('assets/bus.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+.nav-tabs {
+    border-bottom: none; 
+}
+
+.nav-tabs .nav-link {
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: rgba(255, 255, 255, 0.75); 
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #f8f9fa; 
+    color: var(--bs-primary); 
+    font-weight: 600; 
+    border-color: #dee2e6 #dee2e6 #f8f9fa; 
+    border-bottom-color: transparent;
+}
+
+.btn-check:checked+.btn-outline-primary {
+    font-weight: 600;
+}
+
+.bus-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.bus-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    border-color: var(--bs-primary);
+}
+
+.bus-card .card-body {
+    padding: 1.5rem;
+}
+
+.bus-card h5 {
+    font-size: 1.25rem;
+}
+
+.bus-card .text-muted {
+    font-size: 0.9rem;
+}
+
+.tab-content .form-label {
+    color: #212529 !important;
+}
+
+.booking-container {
+    position: relative;
+    overflow: hidden;
+    background-image: url('https://www.automotiveroads.com/wp-content/uploads/2024/10/Untitled-3-1.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.booking-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.booking-container > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* === Perbaikan Responsif Lanjutan === */
+
+/* 1. Membuat dropdown Select2 tidak 'bocor' di mobile */
+.select2-results__option {
+    white-space: normal !important; /* Izinkan teks di dalam opsi untuk wrap ke baris baru */
+    word-wrap: break-word !important;
+}
+
+/* 2. Menyempurnakan tampilan full-width untuk mobile & tablet (di bawah 992px) */
+@media (max-width: 991.98px) {
+    .hero-bus > .container-lg {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .tab-content.rounded-bottom {
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+}
+
+/* 3. Mencegah form (.tab-content) melebihi batas di desktop */
+#bookingTabContent {
+    overflow: hidden;
+}
