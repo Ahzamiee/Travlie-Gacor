@@ -11,7 +11,7 @@ class Schedule extends Model {
                 origin.location_name as origin_name,
                 dest.location_name as destination_name
             FROM ticket_schedules ts
-            JOIN vehicles v ON ts.vehicle_id = v.id
+            JOIN transport v ON ts.vehicle_id = v.id
             JOIN operators o ON v.operator_id = o.id
             JOIN locations origin ON ts.origin_id = origin.id
             JOIN locations dest ON ts.destination_id = dest.id
@@ -40,7 +40,7 @@ class Schedule extends Model {
         $query = "
             SELECT ts.*, v.class_name, o.name as operator_name, origin.location_name as origin, dest.location_name as destination
             FROM ticket_schedules ts
-            JOIN vehicles v ON ts.vehicle_id = v.id
+            JOIN transport v ON ts.vehicle_id = v.id
             JOIN operators o ON v.operator_id = o.id
             JOIN locations origin ON ts.origin_id = origin.id
             JOIN locations dest ON ts.destination_id = dest.id
