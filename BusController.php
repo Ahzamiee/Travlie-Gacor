@@ -47,6 +47,6 @@ class BusController extends Controller {
       }
       
       // Load view bus.php dengan data yang sudah diproses
-      $this->loadView('dashboard/bus', $data);
+      $this->loadView('bus/index', $data);
     }
 }
