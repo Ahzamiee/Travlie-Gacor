@@ -30,38 +30,7 @@ class AdminController extends Controller {
         ]);
     }
 
-   
-    public function storeOrder() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $userModel = $this->loadModel('User');
-            $orderModel = $this->loadModel('Order');
-            
-            $user_id = $_POST['user_id'];
 
-            
-            $userExists = $userModel->getById($user_id);
-
-            if (!$userExists) {
-               
-                $_SESSION['form_error'] = "Error: User ID '{$user_id}' tidak ditemukan. Pesanan tidak dapat dibuat.";
-                header("Location: ?c=admin&m=createOrderForm");
-                exit();
-            }
-
-            $orderModel->createOrder(
-                $user_id,
-                $_POST['order_name'],
-                $_POST['order_title'],
-                $_POST['category'],
-                $_POST['detail'],
-                $_POST['total_price'],
-                $_POST['status']
-            );
-            
-            header("Location: ?c=admin&m=manageOrders");
-            exit();
-        }
-    }
 
     public function manageOrders() {
         $orderModel = $this->loadModel('Order');
@@ -313,12 +282,16 @@ public function deletePromo() {
    //Accommodation
 
     public function manageAccommodations() {
-        $accommodations = $this->accommodationModel->getAllAccommodationsForAdmin();
-        $data = ['accommodations' => $accommodations];
-        $this->loadView('admin/accommodation/manage_accommodation', $data);
+        // PERBAIKAN: Load model yang dibutuhkan di awal method
+        $accommodationModel = $this->loadModel('Accommodation');
+        $accommodations = $accommodationModel->getAllAccommodationsForAdmin();
+        $this->loadView('admin/accommodation/manage_accommodation', ['accommodations' => $accommodations]);
     }
 
-    public function createAccommodation() {
+   public function createAccommodation() {
+        // PERBAIKAN: Load model di sini agar bisa digunakan di bawah
+        $accommodationModel = $this->loadModel('Accommodation');
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = [
                 'nama_akomodasi' => $_POST['nama_akomodasi'] ?? '',
@@ -329,78 +302,84 @@ public function deletePromo() {
                 'kota' => $_POST['kota'] ?? '',
                 'rating_bintang' => $_POST['rating_bintang'] ?? 0,
                 'harga_standard' => $_POST['harga_standard'] ?? 0,
-                'harga_diskon' => $_POST['harga_diskon'] ?? null,
+                'harga_diskon' => empty($_POST['harga_diskon']) ? null : $_POST['harga_diskon'],
                 'url_gambar_utama' => $_POST['url_gambar_utama'] ?? '',
                 'telepon_kontak' => $_POST['telepon_kontak'] ?? '',
                 'email_kontak' => $_POST['email_kontak'] ?? ''
             ];
 
-            if ($this->accommodationModel->createAccommodation($data)) {
+            // Gunakan variabel lokal yang sudah di-load
+            if ($accommodationModel->createAccommodation($data)) {
                 header('Location: ?c=admin&m=manageAccommodations&success=created');
             } else {
                 header('Location: ?c=admin&m=createAccommodation&error=failed');
             }
             exit();
         }
-
         $this->loadView('admin/accommodation/create_accommodation');
     }
 
-    public function editAccommodation($id = null) {
-        if ($id === null && isset($_GET['id'])) {
-            $id = $_GET['id'];
-        }
+   public function editAccommodation($id = null) {
+    // 1. Kita buat variabel LOKAL di sini
+    $accommodationModel = $this->loadModel('Accommodation');
 
-        if ($id === null) {
-            header('Location: ?c=admin&m=manageAccommodations');
-            exit();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $data = [
-                'nama_akomodasi' => $_POST['nama_akomodasi'] ?? '',
-                'deskripsi_singkat' => $_POST['deskripsi_singkat'] ?? '',
-                'deskripsi_lengkap' => $_POST['deskripsi_lengkap'] ?? '',
-                'tipe_akomodasi' => $_POST['tipe_akomodasi'] ?? '',
-                'provinsi' => $_POST['provinsi'] ?? '',
-                'kota' => $_POST['kota'] ?? '',
-                'rating_bintang' => $_POST['rating_bintang'] ?? 0,
-                'harga_standard' => $_POST['harga_standard'] ?? 0,
-                'harga_diskon' => $_POST['harga_diskon'] ?? null,
-                'url_gambar_utama' => $_POST['url_gambar_utama'] ?? '',
-                'telepon_kontak' => $_POST['telepon_kontak'] ?? '',
-                'email_kontak' => $_POST['email_kontak'] ?? ''
-            ];
-
-            if ($this->accommodationModel->updateAccommodation($id, $data)) {
-                header('Location: ?c=admin&m=manageAccommodations&success=updated');
-            } else {
-                header('Location: ?c=admin&m=editAccommodation&id=' . $id . '&error=failed');
-            }
-            exit();
-        }
-
-        $accommodation = $this->accommodationModel->getAccommodationById($id);
-        if (!$accommodation) {
-            header('Location: ?c=admin&m=manageAccommodations&error=notfound');
-            exit();
-        }
-
-        $data = ['accommodation' => $accommodation];
-        $this->loadView('admin/accommodation/edit_accommodation', $data);
+    if ($id === null && isset($_GET['id'])) {
+        $id = $_GET['id'];
+    }
+    if ($id === null) {
+        header('Location: ?c=admin&m=manageAccommodations');
+        exit();
     }
 
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $data = [
+            'nama_akomodasi' => $_POST['nama_akomodasi'] ?? '',
+            'deskripsi_singkat' => $_POST['deskripsi_singkat'] ?? '',
+            'deskripsi_lengkap' => $_POST['deskripsi_lengkap'] ?? '',
+            'tipe_akomodasi' => $_POST['tipe_akomodasi'] ?? '',
+            'provinsi' => $_POST['provinsi'] ?? '',
+            'kota' => $_POST['kota'] ?? '',
+            'rating_bintang' => $_POST['rating_bintang'] ?? 0,
+            'harga_standard' => $_POST['harga_standard'] ?? 0,
+            'harga_diskon' => empty($_POST['harga_diskon']) ? null : $_POST['harga_diskon'],
+            'url_gambar_utama' => $_POST['url_gambar_utama'] ?? '',
+            'telepon_kontak' => $_POST['telepon_kontak'] ?? '',
+            'email_kontak' => $_POST['email_kontak'] ?? ''
+        ];
+
+        // PERBAIKAN: Gunakan variabel lokal $accommodationModel, bukan $this->...
+        if ($accommodationModel->updateAccommodation($id, $data)) {
+            header('Location: ?c=admin&m=manageAccommodations&success=updated');
+        } else {
+            header('Location: ?c=admin&m=editAccommodation&id=' . $id . '&error=failed');
+        }
+        exit();
+    }
+
+    // PERBAIKAN: Gunakan juga variabel lokal di sini
+    $accommodation = $accommodationModel->getAccommodationById($id);
+    if (!$accommodation) {
+        header('Location: ?c=admin&m=manageAccommodations&error=notfound');
+        exit();
+    }
+
+    $data = ['accommodation' => $accommodation];
+    $this->loadView('admin/accommodation/edit_accommodation', $data);
+}
+
     public function deleteAccommodation($id = null) {
+        // PERBAIKAN: Load model di sini
+        $accommodationModel = $this->loadModel('Accommodation');
+        
         if ($id === null && isset($_GET['id'])) {
             $id = $_GET['id'];
         }
-
         if ($id === null) {
             header('Location: ?c=admin&m=manageAccommodations');
             exit();
         }
 
-        if ($this->accommodationModel->deleteAccommodation($id)) {
+        if ($accommodationModel->deleteAccommodation($id)) {
             header('Location: ?c=admin&m=manageAccommodations&success=deleted');
         } else {
             header('Location: ?c=admin&m=manageAccommodations&error=delete_failed');
@@ -409,25 +388,23 @@ public function deletePromo() {
     }
 
     public function toggleStatus($id = null) {
-        // Tidak perlu checkAdminAccess() lagi di sini jika sudah di constructor
-        // Tapi pastikan ID diterima dengan benar
+        // PERBAIKAN: Load model di sini
+        $accommodationModel = $this->loadModel('Accommodation');
+
         if ($id === null && isset($_GET['id'])) {
             $id = $_GET['id'];
         }
-
         if ($id === null) {
             header('Location: ?c=admin&m=manageAccommodations&error=status_failed&msg=ID_not_provided');
             exit();
         }
 
-        if ($this->accommodationModel->toggleAccommodationStatus($id)) {
-            // Redirect kembali ke halaman manajemen dengan pesan sukses
+        if ($accommodationModel->toggleAccommodationStatus($id)) {
             header('Location: ?c=admin&m=manageAccommodations&success=status_updated');
         } else {
-            // Redirect kembali dengan pesan error
             header('Location: ?c=admin&m=manageAccommodations&error=status_failed');
         }
-        exit(); // Penting: Selalu keluar setelah redirect
+        exit();
     }
 
     // Metode checkAdminAccess() Anda
@@ -438,21 +415,19 @@ public function deletePromo() {
         }
     }
 
-    // --- MANAJEMEN JADWAL TIKET ---
-
-    public function manageSchedules() {
+     public function manageSchedules() {
         $scheduleModel = $this->loadModel('Schedule');
         $schedules = $scheduleModel->getAll();
-        $this->loadView('admin/schedules/index', ['title' => 'Manajemen Jadwal', 'schedules' => $schedules]);
+        $this->loadView('admin/bus/index', ['title' => 'Manajemen Jadwal', 'schedules' => $schedules]);
     }
 
     public function createScheduleForm() {
         $data = [
             'title' => 'Tambah Jadwal Baru',
-            'vehicles' => $this->loadModel('Vehicle')->getAll(), // Asumsi ada method getAll() di VehicleModel
+            'vehicles' => $this->loadModel('Transport')->getAll(), // Asumsi ada method getAll() di VehicleModel
             'locations' => $this->loadModel('Location')->getAll()
         ];
-        $this->loadView('admin/schedules/create', $data);
+        $this->loadView('admin/bus/create', $data);
     }
 
     public function storeSchedule() {
@@ -472,10 +447,10 @@ public function deletePromo() {
         $data = [
             'title' => 'Edit Jadwal',
             'schedule' => $schedule,
-            'vehicles' => $this->loadModel('Vehicle')->getAll(),
+            'vehicles' => $this->loadModel('Transport')->getAll(),
             'locations' => $this->loadModel('Location')->getAll()
         ];
-        $this->loadView('admin/schedules/edit', $data);
+        $this->loadView('admin/bus/edit', $data);
     }
 
     public function updateSchedule() {
