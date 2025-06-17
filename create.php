@@ -37,6 +37,13 @@
                 <label for="gambar_url" class="form-label">URL Gambar</label>
                 <input type="text" class="form-control" id="gambar_url" name="gambar_url" placeholder="https://.../gambar.jpg">
             </div>
+            <div class="mb-3">
+                <label for="is_aktif" class="form-label">Status</label>
+                <select class="form-select" id="is_aktif" name="is_aktif">
+                <option value="1" selected>Aktif</option>
+                <option value="0">Tidak Aktif</option>
+                </select>
+            </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="?c=vehicle&m=rent" class="btn btn-secondary">Batal</a>
