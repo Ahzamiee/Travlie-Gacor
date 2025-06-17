@@ -437,4 +437,64 @@ public function deletePromo() {
             exit();
         }
     }
+
+    // --- MANAJEMEN JADWAL TIKET ---
+
+    public function manageSchedules() {
+        $scheduleModel = $this->loadModel('Schedule');
+        $schedules = $scheduleModel->getAll();
+        $this->loadView('admin/schedules/index', ['title' => 'Manajemen Jadwal', 'schedules' => $schedules]);
+    }
+
+    public function createScheduleForm() {
+        $data = [
+            'title' => 'Tambah Jadwal Baru',
+            'vehicles' => $this->loadModel('Vehicle')->getAll(), // Asumsi ada method getAll() di VehicleModel
+            'locations' => $this->loadModel('Location')->getAll()
+        ];
+        $this->loadView('admin/schedules/create', $data);
+    }
+
+    public function storeSchedule() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $scheduleModel = $this->loadModel('Schedule');
+            $scheduleModel->create($_POST);
+            header("Location: ?c=admin&m=manageSchedules");
+            exit();
+        }
+    }
+
+    public function editScheduleForm() {
+        $id = $_GET['id'] ?? null;
+        $scheduleModel = $this->loadModel('Schedule');
+        $schedule = $scheduleModel->getById($id);
+        
+        $data = [
+            'title' => 'Edit Jadwal',
+            'schedule' => $schedule,
+            'vehicles' => $this->loadModel('Vehicle')->getAll(),
+            'locations' => $this->loadModel('Location')->getAll()
+        ];
+        $this->loadView('admin/schedules/edit', $data);
+    }
+
+    public function updateSchedule() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $scheduleModel = $this->loadModel('Schedule');
+            $scheduleModel->update($id, $_POST);
+            header("Location: ?c=admin&m=manageSchedules");
+            exit();
+        }
+    }
+
+    public function deleteSchedule() {
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $scheduleModel = $this->loadModel('Schedule');
+            $scheduleModel->delete($id);
+        }
+        header("Location: ?c=admin&m=manageSchedules");
+        exit();
+    }
 }
