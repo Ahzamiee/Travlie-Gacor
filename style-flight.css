@@ -1,0 +1,566 @@
+/* flight-style.css - REVISED */
+
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', 'Arial', sans-serif; /* Font lebih modern */
+    margin: 0;
+    padding: 0;
+    background-color: #eef2f5; /* Warna latar belakang umum yang lebih cerah */
+    color: #333;
+}
+
+.flight-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* Search Hero Section */
+.search-hero {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; /* Pastikan gambar tidak diulang */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 12px; /* Sedikit lebih melengkung */
+    overflow: hidden;
+    margin-bottom: 40px; /* Jarak lebih luas ke bawah */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Bayangan lebih dalam */
+}
+
+/* Overlay yang lebih gelap untuk kontras teks */
+.search-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Agak lebih gelap untuk kontras yang lebih baik */
+    z-index: 1;
+}
+
+/* Search Box Wrapper - Kunci Perbaikan Tampilan */
+.search-box-wrapper {
+    position: relative;
+    z-index: 2;
+    padding: 35px; /* Padding sedikit lebih besar */
+    border-radius: 15px; /* Border-radius lebih besar */
+    width: 90%;
+    max-width: 950px; /* Lebar maksimal sedikit lebih besar */
+}
+
+.search-box-wrapper h2 {
+    color: #fff;
+    margin-bottom: 30px; /* Jarak lebih dari form */
+    font-size: 2.8em; /* Ukuran font judul lebih besar */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6); /* Text shadow lebih kuat */
+}
+
+.flight-search-form {
+    display: grid;
+    /* Perbaikan grid untuk memastikan kolom rata */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px; /* Jarak antar input sedikit lebih besar */
+    align-items: end;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.input-group label {
+    color: #f0f0f0; /* Label lebih terang agar kontras dengan background gelap */
+    margin-bottom: 8px; /* Jarak dari label ke input */
+    font-weight: 600; /* Font weight sedikit lebih tebal */
+    font-size: 0.95em;
+    text-align: left;
+    text-shadow: 0.5px 0.5px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Transparent Input Fields */
+.transparent-input {
+    width: 100%;
+    padding: 14px 18px; /* Padding lebih besar */
+    border: 1px solid rgba(255, 255, 255, 0.6); /* Border lebih jelas */
+    border-radius: 10px; /* Border-radius sedikit lebih besar */
+    background-color: rgba(255, 255, 255, 0.15); /* Input transparan yang lebih terlihat */
+    color: #fff; /* Warna teks input */
+    font-size: 1.05em; /* Ukuran font sedikit lebih besar */
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    appearance: none; /* Hapus gaya default browser untuk select */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.transparent-input::placeholder {
+    color: rgba(255, 255, 255, 0.7); /* Warna placeholder sedikit lebih gelap */
+}
+
+.transparent-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.9); /* Border lebih jelas saat fokus */
+    background-color: rgba(255, 255, 255, 0.25); /* Background sedikit lebih solid saat fokus */
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4); /* Bayangan fokus lebih menonjol */
+}
+
+/* Dropdown arrow for select */
+.input-group select.transparent-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 18px;
+    padding-right: 40px; /* Ruang untuk ikon panah */
+}
+
+
+.transparent-input option {
+    background-color: #2c3e50; /* Background opsi yang lebih gelap untuk kontras */
+    color: #fff;
+    padding: 10px;
+}
+
+/* jQuery UI Autocomplete styling */
+.ui-autocomplete {
+    background-color: #fff;
+    border: 1px solid #c9d2db; /* Border lebih soft */
+    border-radius: 6px; /* Border-radius sedikit lebih */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 250px; /* Tinggi maksimal autocomplete lebih */
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.ui-menu-item {
+    padding: 10px 15px; /* Padding lebih nyaman */
+    cursor: pointer;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.ui-menu-item:hover,
+.ui-menu-item.ui-state-active {
+    background-color: #e6f0ff; /* Warna hover yang lebih soft (biru muda) */
+    color: #0069d9; /* Warna teks saat hover */
+}
+
+/* Passenger Selector */
+.passenger-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.passenger-selector {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #c9d2db; /* Border lebih soft */
+    border-radius: 10px; /* Border-radius sedikit lebih */
+    padding: 20px; /* Padding lebih besar */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    z-index: 100; /* Pastikan di atas yang lain */
+    width: 280px; /* Lebar selector sedikit lebih besar */
+    right: 0;
+    left: unset;
+    margin-top: 8px; /* Jarak dari input */
+}
+
+.selector-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Jarak antar item lebih besar */
+}
+
+.selector-item:last-child {
+    margin-bottom: 0;
+}
+
+.selector-item span {
+    color: #333;
+    font-weight: 600; /* Font weight lebih tebal */
+    font-size: 1.1em;
+}
+
+.selector-item input[type="number"] {
+    width: 60px; /* Lebar input angka lebih besar */
+    height: 35px; /* Tinggi input angka */
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 5px;
+    font-size: 1em;
+}
+
+.selector-item .btn-minus,
+.selector-item .btn-plus {
+    background-color: #007bff; /* Biru cerah */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 35px; /* Ukuran tombol lebih besar */
+    height: 35px;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Mencegah tombol mengecil */
+}
+
+.selector-item .btn-minus:hover,
+.selector-item .btn-plus:hover {
+    background-color: #0056b3; /* Biru gelap saat hover */
+    transform: scale(1.1); /* Animasi scale lebih menonjol */
+}
+
+/* Search Button */
+.search-button {
+    grid-column: span var(--grid-span, 1);
+    width: 100%;
+    padding: 15px 25px; /* Padding lebih besar */
+    background-color: #65b7ff; /* Hijau yang lebih menarik */
+    color: #fff;
+    border: none;
+    border-radius: 10px; /* Border-radius lebih besar */
+    font-size: 1.2em; /* Font lebih besar */
+    font-weight: bold; /* Font lebih tebal */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 15px; /* Jarak lebih */
+    box-shadow: 0 4px 15px rgba(126, 227, 255, 0.4); /* Bayangan biru */
+}
+
+.search-button:hover {
+    background-color: #47a7fc; /* Hijau lebih gelap saat hover */
+    transform: translateY(-3px); /* Animasi lebih menonjol */
+    box-shadow: 0 6px 20px rgba(71, 167, 252, 0.6);
+}
+
+
+/* Search Results Section */
+.search-results {
+    background-color: #fff;
+    padding: 35px; /* Padding lebih besar */
+    border-radius: 12px; /* Border-radius lebih besar */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Bayangan lebih halus */
+    margin-top: 30px; /* Jarak dari section di atasnya */
+}
+
+.search-results h3 {
+    text-align: center;
+    margin-bottom: 30px; /* Jarak lebih besar */
+    color: #1a73e8; /* Warna biru yang lebih kuat */
+    font-size: 2.2em; /* Ukuran font lebih besar */
+    font-weight: 700; /* Font lebih tebal */
+}
+
+.flight-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Minmax sedikit lebih besar */
+    gap: 30px; /* Jarak antar kartu lebih besar */
+}
+
+.flight-card {
+    background-color: #fefefe; /* Sedikit lebih putih */
+    border: 1px solid #e0e0e0; /* Border lebih halus */
+    border-radius: 12px; /* Border-radius lebih besar */
+    overflow: hidden;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08); /* Bayangan lebih dalam */
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animasi lebih smooth */
+    display: flex;
+    flex-direction: column;
+}
+
+.flight-card:hover {
+    transform: translateY(-8px); /* Efek hover lebih menonjol */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* Bayangan lebih dramatis */
+}
+
+.flight-card-image {
+    width: 100%;
+    height: 200px; /* Tinggi gambar sedikit lebih besar */
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid #e0e0e0;
+    filter: brightness(0.95); /* Sedikit redupkan gambar untuk konsistensi */
+    transition: filter 0.3s ease;
+}
+
+.flight-card:hover .flight-card-image {
+    filter: brightness(1); /* Kembalikan kecerahan saat hover */
+}
+
+
+.flight-card-content {
+    padding: 25px; /* Padding lebih besar */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* Hapus align-items: center; dari sini */
+    /* align-items: center; */
+}
+
+.flight-card-content h4 {
+    margin-top: 0;
+    margin-bottom: 12px; /* Jarak dari judul */
+    color: #2c3e50; /* Warna judul yang lebih gelap */
+    font-size: 1.4em;
+    font-weight: 600; /* Font lebih tebal */
+    text-align: left; /* Kembalikan ke kiri (atau default browser) */
+}
+
+.flight-card-content p {
+    margin-bottom: 10px; /* Jarak antar paragraf */
+    color: #667788; /* Warna teks yang lebih lembut */
+    font-size: 1em;
+    line-height: 1.5;
+    text-align: left; /* Kembalikan ke kiri (atau default browser) */
+}
+
+.flight-card-content .price {
+    font-size: 1.6em; /* Ukuran font harga lebih besar */
+    font-weight: 700; /* Lebih tebal */
+    color: #e74c3c; /* Merah yang lebih menonjol */
+    margin-top: auto;
+    margin-bottom: 20px; /* Jarak dari tombol */
+    text-align: left; /* Kembalikan ke kiri (atau default browser) */
+}
+
+.btn-detail-pesan {
+    display: block; /* Tetap block agar bisa menggunakan margin: auto */
+    max-width: 250px; /* Batasi lebar tombol agar bisa di-center */
+    margin: 0 auto; /* Ini yang akan menengahkan tombol */
+    padding: 12px 15px; /* Padding sedikit lebih besar */
+    background-color: #3498db; /* Biru yang lebih dinamis */
+    color: #fff;
+    border: none;
+    border-radius: 8px; /* Border-radius lebih besar */
+    font-size: 1.1em;
+    font-weight: 600; /* Lebih tebal */
+    cursor: pointer;
+    text-align: center; /* Pastikan teks di dalam tombol di tengah */
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+.btn-detail-pesan:hover {
+    background-color: #2980b9; /* Biru lebih gelap saat hover */
+    transform: translateY(-2px); /* Animasi lebih menonjol */
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .search-box-wrapper {
+        max-width: 800px;
+    }
+    .flight-search-form {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 15px;
+    }
+    .search-box-wrapper h2 {
+        font-size: 2.4em;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-hero {
+        height: 350px;
+        border-radius: 0; /* Full width di mobile */
+    }
+    .flight-container {
+        padding: 0;
+    }
+    .search-box-wrapper {
+        padding: 25px;
+        border-radius: 0; /* Full width di mobile */
+        width: 100%; /* Pastikan full width */
+    }
+    .search-box-wrapper h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    .flight-search-form {
+        grid-template-columns: 1fr; /* Kolom tunggal untuk perangkat kecil */
+        gap: 10px;
+    }
+    .search-button {
+        grid-column: unset;
+        margin-top: 20px;
+    }
+    .flight-list {
+        grid-template-columns: 1fr; /* Kolom tunggal untuk kartu di mobile */
+        padding: 0 20px; /* Padding di dalam flight-list */
+        gap: 20px;
+    }
+    .search-results {
+        padding: 25px 20px;
+        border-radius: 0; /* Full width */
+    }
+    /* Pastikan tombol tetap di tengah saat di mobile */
+    .btn-detail-pesan {
+        max-width: 80%; /* Sesuaikan lebar di mobile agar tidak terlalu kecil */
+        width: auto; /* Biarkan lebar mengikuti konten atau max-width */
+    }
+}
+
+@media (max-width: 480px) {
+    .search-hero {
+        height: 300px;
+    }
+    .search-box-wrapper {
+        padding: 20px;
+    }
+    .search-box-wrapper h2 {
+        font-size: 1.8em;
+    }
+    .transparent-input {
+        padding: 10px 12px;
+        font-size: 0.95em;
+    }
+    .search-button {
+        padding: 12px 15px;
+        font-size: 1em;
+    }
+    .search-results h3 {
+        font-size: 1.8em;
+    }
+    .flight-card-content h4 {
+        font-size: 1.2em;
+    }
+    .flight-card-content .price {
+        font-size: 1.3em;
+    }
+    .selector-item span {
+        font-size: 1em;
+    }
+    .selector-item .btn-minus,
+    .selector-item .btn-plus {
+        width: 30px;
+        height: 30px;
+        font-size: 1.1em;
+    }
+}
+.search-box-header-wrapper {
+    display: flex;
+    justify-content: space-between; /* Untuk meratakan H2 di kiri dan tombol di kanan */
+    align-items: center; /* Untuk menengahkan secara vertikal */
+    margin-bottom: 30px; /* Jarak dari form di bawahnya */
+    /* Pastikan h2 dalam wrapper ini tidak memiliki margin-bottom yang mengganggu flexbox */
+}
+
+.search-box-header-wrapper h2 {
+    margin-bottom: 0; /* Menghapus margin-bottom H2 agar tidak mengganggu perataan flex */
+    /* Gaya color, font-size, text-shadow tetap dari search-box-wrapper h2 */
+}
+
+/* flight-style.css - REVISED (Tombol di samping Kelas) */
+
+/* ... (Gaya CSS sebelumnya yang tidak relevan dengan layout grid utama, tetap sama) ... */
+
+.flight-search-form {
+    display: grid;
+    /* Kita perlu memastikan ada cukup kolom agar "Kelas" dan "search-form-actions"
+       bisa berdampingan.
+       Misalnya, jika Anda punya 4 input di baris pertama, dan mereka butuh 4 kolom.
+       Maka di baris kedua, "Kelas" akan mengambil 1 kolom, dan "search-form-actions"
+       akan mengambil 1 kolom lagi di sebelahnya.
+
+       Maka, grid-template-columns harus memungkinkan setidaknya 2 kolom lagi di baris berikutnya.
+       'auto-fit' dan 'minmax' sudah cukup bagus untuk ini, asalkan minmax tidak terlalu besar
+       sehingga hanya satu item yang muat per baris.
+    */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px; /* Jarak antar input/tombol */
+    align-items: end; /* Kunci: Menyelaraskan item ke bagian bawah dari barisnya */
+    /* grid-auto-rows: minmax(min-content, max-content); */ /* Ini sudah bagus */
+}
+
+/* Pastikan input-group tidak memiliki margin-bottom yang akan mengganggu perataan vertikal */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-bottom: 0; /* Penting: Hapus margin-bottom yang dapat menggeser elemen di baris berikutnya */
+}
+
+/* Gaya untuk aksi tombol di dalam form pencarian */
+.search-form-actions {
+    /* Hapus grid-column: 1 / -1; jika masih ada, karena kita tidak ingin dia membentang */
+
+    display: flex; /* Menggunakan Flexbox untuk meratakan tombol Cari dan Kelola Data */
+    flex-wrap: nowrap; /* Penting: Jangan biarkan tombol melipat di dalam kontainer ini
+                           jika ingin mereka selalu berdampingan di desktop.
+                           Akan diatur ulang di media query untuk mobile. */
+    justify-content: flex-start; /* **Kunci**: Meratakan tombol ke kiri di dalam kontainer ini
+                                    (atau 'center' jika Anda ingin mereka di tengah sel grid-nya) */
+    align-items: flex-end; /* **Kunci**: Menyelaraskan kontainer ini ke bagian bawah sel grid-nya */
+    gap: 15px; /* Jarak antar tombol */
+
+    height: 100%; /* **Kunci**: Pastikan kontainer flex mengambil tinggi penuh sel grid-nya */
+    /* Ini penting agar align-items: end pada .flight-search-form dapat meratakannya
+       dengan input 'Kelas' yang mungkin memiliki label di atasnya. */
+
+    padding-bottom: 0; /* Pastikan tidak ada padding bawah yang menggeser */
+}
+
+/* Gaya Seragam untuk Tombol Cari dan Tombol Admin */
+.search-button,
+.btn-admin-manage-data {
+    padding: 15px 25px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    align-items: center; /* Tengahkan ikon/teks secara vertikal di dalam tombol */
+    justify-content: center; /* Tengahkan ikon/teks secara horizontal di dalam tombol */
+    gap: 8px;
+    flex-shrink: 0; /* Penting: Cegah tombol mengecil di desktop */
+    flex-grow: 1; /* Biarkan tombol tumbuh untuk mengisi ruang yang tersedia secara proporsional */
+    max-width: 200px; /* Batasi lebar maksimum per tombol */
+    min-width: 120px; /* Batasi lebar minimum per tombol */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    margin-top: 0; /* Pastikan tidak ada margin-top individual pada tombol */
+}
+
+/* ... (Sisa gaya tombol Cari dan Kelola Data yang sudah ada) ... */
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    /* ... (Kode yang sudah ada) ... */
+    .flight-search-form {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    /* ... (Kode yang sudah ada) ... */
+    .flight-search-form {
+        grid-template-columns: 1fr; /* Kolom tunggal untuk perangkat kecil */
+    }
+    .search-form-actions {
+        flex-direction: column; /* Tombol bertumpuk di mobile */
+        justify-content: center; /* Tengahkan saat bertumpuk */
+        align-items: center; /* Tengahkan saat bertumpuk */
+        margin-top: 15px; /* Tambahkan margin atas lagi di mobile jika perlu */
+    }
+    .search-button,
+    .btn-admin-manage-data {
+        max-width: 100%; /* Agar tombol mengisi lebar penuh di mobile */
+    }
+}
