@@ -128,14 +128,14 @@
                     <div class="row g-3 align-items-center">
 
                         <div class="col-md-8 d-none d-md-flex align-items-center" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modal' . $id . '">
-                            <img src="' . $gambar . '" alt="' . htmlspecialchars($merk) . '" class="img-fluid rounded" style="width: 120px; height: 80px; object-fit: cover;">
+                            <img src="' . htmlspecialchars($gambar) . '" alt="' . htmlspecialchars($merk) . '" class="img-fluid rounded" style="width: 120px; height: 80px; object-fit: cover;">
                             <div class="ms-3">
                                 <h5 class="mb-1">' . htmlspecialchars($merk) . '</h5>
                                 <small class="text-muted">' . htmlspecialchars($detail) . '</small>
                             </div>
                         </div>
                         <div class="col-md-4 text-md-end d-none d-md-block">
-                            <p class="mb-2">Mulai dari<br><strong class="fs-5 text-primary">IDR ' . $harga . '</strong>/hari</p>
+                            <p class="mb-2">Mulai dari<br><strong class="fs-5 text-primary">IDR ' . htmlspecialchars($harga) . '</strong>/hari</p>
                             <a href="' . $sewaUrlDefault . '" class="btn btn-primary">Sewa Sekarang</a>
                             ' . ($isAdmin ? '
                             <div class="mt-2">
@@ -165,7 +165,7 @@
                             </div>
                         </div>
                         <div class="col-5 d-md-none" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#modal' . $id . '">
-                            <img src="' . $gambar . '" alt="' . htmlspecialchars($merk) . '" class="img-fluid rounded">
+                            <img src="' . htmlspecialchars($gambar) . '" alt="' . htmlspecialchars($merk) . '" class="img-fluid rounded">
                         </div>
 
                     </div>
@@ -185,7 +185,7 @@
                                     <li>Merk: ' . htmlspecialchars($merk) . '</li>
                                     <li>Detail: ' . htmlspecialchars($detail) . '</li>
                                     <li>Kota: ' . htmlspecialchars($kota) . '</li>
-                                    <li>Harga: IDR ' . $harga . '/hari</li>
+                                    <li>Harga: IDR ' . htmlspecialchars($harga) . '/hari</li>
                                 </ul>
                             </div>
                             <div class="modal-footer">
